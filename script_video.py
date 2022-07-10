@@ -41,44 +41,43 @@ parser.add_argument("--path", type=str, required=True, help="Enter the path to t
 parser.add_argument("--output", type=str, required=False, help="Enter the path to the output csv")
 args = parser.parse_args()
 
-f = open(args.output, 'w')
-writer = csv.writer(f)
-
 thres = 25 # Confidence interval for detecting Bacteria = (16, 40)
 # dist_thres = 4.8 # Confidence interval for distance - Hard-Coded (Tested Against 6)
-dist_thres = 5.3
+dist_thres = 4.8
 frame_num = 1
 prev_num_bact = 0
 
-for images in os.listdir(args.path):
-    print(frame_num)
-    im = Image.open(args.path + images)
-    # im.show()
-    imarray = numpy.array(im)
+with open(args.output, 'w') as f:
+    for images in os.listdir(args.path):
+        print(frame_num)
+        im = Image.open(args.path + images)
+        # im.show()
+        imarray = numpy.array(im)
 
-    ls = locations(imarray, thres)
-    for l in ls:
-        # print(l)
-        a,b = l
-        imarray[b][a] = [255,0,0]
+        ls = locations(imarray, thres)
+        for l in ls:
+            # print(l)
+            a,b = l
+            imarray[b][a] = [255,0,0]
 
-    bacteria_centres = differentiate_bacteria(ls, dist_thres)
-    num_bacteria = len(bacteria_centres)
+        bacteria_centres = differentiate_bacteria(ls, dist_thres)
+        num_bacteria = len(bacteria_centres)
 
-    if prev_num_bact > num_bacteria:
-        bacteria_centres = differentiate_bacteria(ls, dist_thres - 1)
-    # print(bacteria_centres)
+        if prev_num_bact > num_bacteria:
+            bacteria_centres = differentiate_bacteria(ls, dist_thres - 1)
+        # print(bacteria_centres)
 
-    num_bacteria = len(bacteria_centres)
+        num_bacteria = len(bacteria_centres)
 
-    writer.writerow(bacteria_centres)
+        if bacteria_centres:
+            for t in bacteria_centres:
+                f.write("X: " + str(t[0]) + " Y: " + str(t[1]) + " Frame Number: " + str(frame_num))
+                f.write("\n")
 
-    # trace_bacteria() # Will Develop function to trace bacteria through the frames
-    frame_num += 1
+        # trace_bacteria() # Will Develop function to trace bacteria through the frames
+        frame_num += 1
 
-    prev_num_bact = num_bacteria
+        prev_num_bact = num_bacteria
 
-    # plt.imshow(imarray, interpolation='nearest')
-    # plt.show()
-
-f.close()
+        # plt.imshow(imarray, interpolation='nearest')
+        # plt.show()

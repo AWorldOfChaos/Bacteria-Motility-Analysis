@@ -58,7 +58,7 @@ def differentiate_bacteria(points: list, dist_thres: float) -> list:
             points.remove(point)
         
         on = False
-        if num>5:
+        if num>8:
             bacteria_centres.append([curr_centre[0]/num, curr_centre[1]/num]) # Consider putting bounds on number of points
 
     return bacteria_centres
