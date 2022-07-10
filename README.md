@@ -7,3 +7,6 @@ The goal is to devise a pipeline which can track bacteria motions through channe
 
 ## Methodology
 Will be updated soon
+
+## Dataset
+Please contact the concerned professors for the data. It has not been shared here since it is not open source
