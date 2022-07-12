@@ -1,0 +1,3 @@
+python script_video.py --path "./Data/10um_noglc/" --output "./Output/out.txt"
+python script_single_image.py --path "./Data/10um_noglc/10um_t006.tif"  
+python evaluate.py --path ".\Data\Annotations\TenumV3.csv" --output ".\Output\out.txt"

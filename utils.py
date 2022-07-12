@@ -1,3 +1,8 @@
+####
+# Author: Kartik Gokhale
+# Date: 09.07.2022
+####
+
 import math
 
 def locs(im: list, thres: float) -> tuple:
