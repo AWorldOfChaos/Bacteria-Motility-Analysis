@@ -14,19 +14,20 @@ import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--path", type=str, required=True, help="Enter the path to the directory containing the .tif files")
-parser.add_argument("--annotations", type=str, required=True, help="Enter the path to the csv containing annotations")
+parser.add_argument("--annotations", type=str, required=False, default="0",help="Enter the path to the csv containing annotations")
 parser.add_argument("--output", type=str, required=False, help="Enter the path to the output csv")
 args = parser.parse_args()
 
 data = []
 frames = []
 
-with open(args.annotations, "r") as f:
-    reader = csv.reader(f, delimiter=",")
-    for i, row in enumerate(reader):
-        data.append([float(row[0]), float(row[1]), int(row[2])])
-        if int(row[2]) not in frames:
-            frames.append(int(row[2]))
+if not args.annotations == "0":
+    with open(args.annotations, "r") as f:
+        reader = csv.reader(f, delimiter=",")
+        for i, row in enumerate(reader):
+            data.append([float(row[0]), float(row[1]), int(row[2])])
+            if int(row[2]) not in frames:
+                frames.append(int(row[2]))
 
 for images in os.listdir(args.path):
     im = Image.open(args.path + images)
