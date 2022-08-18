@@ -29,7 +29,7 @@
 import argparse
 from inspect import trace
 from posixpath import sep
-from re import L
+from re import L, T
 from tkinter import Frame
 import numpy as np
 from PIL import Image
@@ -47,9 +47,15 @@ args = parser.parse_args()
 
 thres = 25 # Confidence interval for detecting Bacteria = (16, 40)
 # dist_thres = 4.8 # Confidence interval for distance - Hard-Coded (Tested Against 6)
-dist_thres = 4.8
+dist_thres = 5
 frame_num = 1
 prev_num_bact = 0
+prev_bacteria_centres = []
+prev1 = []
+prev2 = []
+prev3 = []
+trace = True
+num = 0
 
 with open(args.output, 'w') as f:
     for images in os.listdir(args.path):
@@ -73,15 +79,27 @@ with open(args.output, 'w') as f:
 
         num_bacteria = len(bacteria_centres)
 
-        if bacteria_centres:
-            for t in bacteria_centres:
-                f.write(str(t[0]) + "," + str(t[1]) + "," + str(frame_num))
-                f.write("\n")
+        bacteria_centres = trace_bacteria(bacteria_centres, prev1, num)
 
-        # trace_bacteria() # Will Develop function to trace bacteria through the frames
+        if bacteria_centres:
+            num = 0
+            for t in bacteria_centres:
+                if not trace:
+                    f.write(str(t[0]) + "," + str(t[1]) + "," + str(frame_num))
+                    f.write("\n")
+                else:
+                    num = max(num, t[2])
+                    f.write(str(t[0]) + "," + str(t[1]) + "," + str(frame_num) + "," + str(t[2]))
+                    f.write("\n")
+
         frame_num += 1
 
         prev_num_bact = num_bacteria
+        prev3 = [c for c in prev2]
+        prev2 = [c for c in prev_bacteria_centres]
+        prev_bacteria_centres = [c for c in bacteria_centres]
+
+        prev1 = prev3 + prev2 + prev_bacteria_centres
 
         # plt.imshow(imarray, interpolation='nearest')
         # plt.show()
